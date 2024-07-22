@@ -1,23 +1,105 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const personSchema = new mongoose.Schema({
+  name:{
+    type: String,
+    required: true,
+    trim: true
+  },
+  age:{
+    type:Number,
+    required:true,
+  },
+  favoriteFoods:{
+    type:[String],
+    default:[]
+
+  }
+
+})
+const Person = mongoose.model('Person',personSchema);
+
+const arrayOfPeople = [
+  {
+    name: "Kushagra",
+    age: 27,
+    favoriteFoods: ["chinese", "indian"]
+  },
+  {
+    name: "John Doe",
+    age: 30,
+    favoriteFoods: ["pizza", "burger", "pasta"]
+  },
+  {
+    name: "Jane Smith",
+    age: 25,
+    favoriteFoods: ["sushi", "ramen", "salad"]
+  },
+  {
+    name: "Emily Johnson",
+    age: 22,
+    favoriteFoods: ["tacos", "nachos", "quesadilla"]
+  },
+  {
+    name: "Michael Brown",
+    age: 35,
+    favoriteFoods: ["steak", "fries", "ice cream"]
+  }
+];
+
+console.log(arrayOfPeople);
 
 
-let Person;
+
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  const person = new Person({
+
+    name:"kushagravarma",
+    age:27,
+    favoriteFoods:["chinese","inidan"]
+  })
+  person.save((err,data)=>{
+    if(err){
+      console.log(err);
+
+      return done(err);
+    }
+    done(null , data);
+
+
+  })
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople,(err,people)=>{
+    if(err){
+      return done(err)
+    }
+    done(null,people);
+  })
 };
 
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+  Person.find({name:personName},(err,data)=>{
+    if(err){
+      return done(err)
+    }
+    done(null, data);
+  })
+  
 };
 
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
-};
+  Person.findOne({favoriteFoods:food},(err,data)=>{
+    if(err){
+      return done(err)
+    }
+    done(null, data);
+  })};
 
 const findPersonById = (personId, done) => {
   done(null /*, data*/);
